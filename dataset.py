@@ -44,3 +44,29 @@ def retrieve(query,top_n=3):
         #sorting by similarity in desecending order, higher the value of similarity the more relevant the chunk
         similarities.sort(key=lambda x:x[1], reverse=True)
         return similarities[:top_n]
+
+#Now time for generation phase implementation
+
+input_query=input("Ask me a question about cats")
+retrieved_knowledge=retrieve(input_query)
+
+print("Retrieved knowledge:")
+for chunk,similarity in retrieved_knowledge:
+    print(f'- (similarity: {similarity:.2f}){chunk}')
+instruction_prompt=f'''You are a helpful chatbot.
+Use only the following pieces of context to answer the question. Don't make up any new information:
+{'\n'.join([f'- {chunk}' for chunk,similarity in retrieved_knowledge])}'''
+
+stream=ollama.chat(
+    model=language_model,
+    messages=[
+        {'role':'system','content': instruction_prompt},
+        {'role':'user','content': input_query}
+    ]
+    stream=True,
+)
+
+print("Chatbot Response:")
+for chunk in stream:  #each chunk is a dictionary with one key called "message"
+#chunk["message"] is also another dictionary with two keys, role and content
+    print(chunk['message']['content'],end="",flush=True)
