@@ -35,38 +35,34 @@ This project demonstrates a simple semantic search chatbot using embeddings and 
    pip install ollama
 Place your cat-facts.txt file in the project root folder.
 
-How it works
-Load cat facts dataset from cat-facts.txt
+## How it works
 
-For each fact (chunk), generate an embedding vector using the Ollama embedding model.
+- Load cat facts dataset from `cat-facts.txt`
+- For each fact (chunk), generate an embedding vector using the Ollama embedding model.
+- Store each `(fact, embedding)` tuple in an in-memory vector database (`vectorDB` list).
+- When a user inputs a query:
+  - Generate embedding for the query.
+  - Calculate cosine similarity between the query embedding and all stored embeddings.
+  - Retrieve top N most similar facts.
+- Construct a prompt with retrieved facts as context and feed it to the Ollama language model to generate an answer grounded in the facts.
 
-Store each (fact, embedding) tuple in an in-memory vector database (vectorDB list).
+---
 
-When a user inputs a query:
+## Notes
 
-Generate embedding for the query.
+- Make sure the Ollama models are correctly installed and accessible via the Ollama CLI or API.
+- The `cat-facts.txt` file should contain clean, distinct facts about cats, one per line, to maximize retrieval effectiveness.
+- This example uses an in-memory vector database for simplicity; for large datasets, consider persistent vector databases like FAISS or Pinecone.
+- The cosine similarity function can be optimized or replaced with libraries such as NumPy for better performance.
 
-Calculate cosine similarity between query embedding and all stored embeddings.
+---
 
-Retrieve top N most similar facts.
+## License
 
-Construct a prompt with retrieved facts as context and feed it to the Ollama language model to generate an answer grounded in the facts.
-
-Notes
-Make sure the Ollama models are correctly installed and accessible via the Ollama CLI or API.
-
-The cat-facts.txt file should contain clean, distinct facts about cats, one per line, to maximize retrieval effectiveness.
-
-This example uses an in-memory vector database for simplicity; for large datasets, consider persistent vector databases like FAISS or Pinecone.
-
-The cosine similarity function can be optimized or replaced with libraries such as NumPy for better performance.
-
-License
 This project is licensed under the MIT License.
 
 Feel free to open issues or submit pull requests to improve the project!
 
----
 
 
 
